@@ -1,0 +1,13 @@
+# Dart pub workspace: one `flutter pub get` here resolves every package, and
+# packages depend on each other's local code while you develop.
+name: fluttercanvas_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+workspace:
+  - packages/fluttercanvas_core
+  - packages/fluttercanvas_renderer
+  - packages/fluttercanvas_builder
+  - apps/playground

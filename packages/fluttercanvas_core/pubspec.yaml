@@ -1,0 +1,20 @@
+name: fluttercanvas_core
+description: Design model, JSON format and responsive Flutter code generator behind FlutterCanvas, the open-source drag-and-drop Flutter UI builder.
+version: 0.1.0
+homepage: https://github.com/sulmanali77/fluttercanvas
+repository: https://github.com/sulmanali77/fluttercanvas/tree/main/packages/fluttercanvas_core
+issue_tracker: https://github.com/sulmanali77/fluttercanvas/issues
+topics:
+  - ui
+  - code-generation
+  - drag-and-drop
+  - responsive
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0

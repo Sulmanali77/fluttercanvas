@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Test core
+        working-directory: packages/fluttercanvas_core
+        run: flutter test
+      - name: Test renderer
+        working-directory: packages/fluttercanvas_renderer
+        run: flutter test
+      - name: Test builder
+        working-directory: packages/fluttercanvas_builder
+        run: flutter test
+      - name: Check packages are publishable
+        run: |
+          for pkg in packages/*; do
+            (cd "$pkg" && flutter pub publish --dry-run) || echo "::warning::$pkg has publish warnings"
+          done
