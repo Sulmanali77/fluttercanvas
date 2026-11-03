@@ -27,6 +27,8 @@ class WidgetPalette extends StatelessWidget {
     WidgetTypes.row: Icons.view_column_outlined,
     WidgetTypes.adaptiveRow: Icons.view_quilt_outlined,
     WidgetTypes.grid: Icons.grid_view,
+    WidgetTypes.freeCanvas: Icons.crop_free,
+    WidgetTypes.box: Icons.check_box_outline_blank,
     WidgetTypes.container: Icons.crop_square,
     WidgetTypes.card: Icons.web_asset,
     WidgetTypes.text: Icons.title,
@@ -36,6 +38,7 @@ class WidgetPalette extends StatelessWidget {
     WidgetTypes.textField: Icons.input,
     WidgetTypes.divider: Icons.horizontal_rule,
     WidgetTypes.spacer: Icons.height,
+    WidgetTypes.customCode: Icons.integration_instructions_outlined,
   };
 
   static IconData iconFor(String type) => _icons[type] ?? Icons.widgets_outlined;
@@ -52,7 +55,8 @@ class WidgetPalette extends StatelessWidget {
         Text(
           touchMode
               ? 'Tap to add, or long-press and drag onto the canvas.'
-              : 'Drag onto the canvas, or click to add after the selection.',
+              : 'Drag onto the canvas, or click to add inside the selected '
+                  'box. Click empty space first to add to the page.',
           style: theme.textTheme.bodySmall,
         ),
         for (final category in categories) ...[

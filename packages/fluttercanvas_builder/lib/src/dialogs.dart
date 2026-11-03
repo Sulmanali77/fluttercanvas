@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:fluttercanvas_core/fluttercanvas_core.dart';
+
 import 'builder_controller.dart';
 
 /// Shows generated code with a copy button.
@@ -12,6 +14,17 @@ Future<void> showCodeDialog(
   return showDialog<void>(
     context: context,
     builder: (_) => _CodeDialog(title: title, code: code),
+  );
+}
+
+/// Shows every exported file in its own tab, with copy buttons.
+Future<void> showExportDialog(
+  BuildContext context,
+  List<GeneratedFile> files,
+) {
+  return showDialog<void>(
+    context: context,
+    builder: (_) => _ExportDialog(files: files),
   );
 }
 
@@ -43,6 +56,62 @@ class _CodeDialog extends StatelessWidget {
             const Divider(height: 1),
             Expanded(child: CodeView(code: code)),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ExportDialog extends StatelessWidget {
+  const _ExportDialog({required this.files});
+
+  final List<GeneratedFile> files;
+
+  @override
+  Widget build(BuildContext context) {
+    final everything = [
+      for (final file in files) '// ===== ${file.path} =====\n${file.content}',
+    ].join('\n');
+    return Dialog(
+      clipBehavior: Clip.antiAlias,
+      child: SizedBox(
+        width: 880,
+        height: 660,
+        child: DefaultTabController(
+          length: files.length,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DialogHeader(
+                title: 'Export code',
+                subtitle: 'Copy these files into the lib folder of a Flutter '
+                    'project, then add your own logic where you see TODO.',
+                actions: [CopyButton(text: everything, label: 'Copy all')],
+              ),
+              TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                tabs: [for (final file in files) Tab(text: file.path)],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    for (final file in files)
+                      Stack(
+                        children: [
+                          Positioned.fill(child: CodeView(code: file.content)),
+                          Positioned(
+                            top: 8,
+                            right: 16,
+                            child: CopyButton(text: file.content),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -144,9 +213,14 @@ class _JsonDialogState extends State<_JsonDialog> {
 }
 
 class _DialogHeader extends StatelessWidget {
-  const _DialogHeader({required this.title, this.actions = const []});
+  const _DialogHeader({
+    required this.title,
+    this.subtitle,
+    this.actions = const [],
+  });
 
   final String title;
+  final String? subtitle;
   final List<Widget> actions;
 
   @override
@@ -156,10 +230,20 @@ class _DialogHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleLarge,
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+              ],
             ),
           ),
           ...actions,
@@ -201,9 +285,10 @@ class CodeView extends StatelessWidget {
 
 /// Copies [text] to the clipboard and confirms it.
 class CopyButton extends StatefulWidget {
-  const CopyButton({super.key, required this.text});
+  const CopyButton({super.key, required this.text, this.label = 'Copy'});
 
   final String text;
+  final String label;
 
   @override
   State<CopyButton> createState() => _CopyButtonState();
@@ -223,7 +308,7 @@ class _CopyButtonState extends State<CopyButton> {
     return TextButton.icon(
       onPressed: _copy,
       icon: Icon(_copied ? Icons.check : Icons.copy),
-      label: Text(_copied ? 'Copied' : 'Copy'),
+      label: Text(_copied ? 'Copied' : widget.label),
     );
   }
 }

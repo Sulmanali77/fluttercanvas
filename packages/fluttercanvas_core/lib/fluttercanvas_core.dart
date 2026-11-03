@@ -4,10 +4,13 @@
 /// servers, in CLIs, or anywhere else you want to read and write designs.
 library;
 
+export 'src/ai_prompt.dart';
 export 'src/breakpoints.dart';
 export 'src/canvas_document.dart';
+export 'src/canvas_project.dart';
 export 'src/code_generator.dart';
 export 'src/colors.dart';
+export 'src/templates.dart';
 export 'src/tree_ops.dart';
 export 'src/widget_catalog.dart';
 export 'src/widget_node.dart';

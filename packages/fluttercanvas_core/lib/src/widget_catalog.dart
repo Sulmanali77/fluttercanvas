@@ -4,7 +4,17 @@ import 'widget_node.dart';
 enum ChildMode { none, single, multiple }
 
 /// The kind of editor used for a property.
-enum PropKind { text, multilineText, number, color, toggle, choice }
+enum PropKind {
+  text,
+  multilineText,
+  number,
+  color,
+  toggle,
+  choice,
+
+  /// A link to another screen: empty for none, `back`, or a screen id.
+  screenLink,
+}
 
 /// Describes one editable property of a widget type.
 class PropSpec {
@@ -60,6 +70,8 @@ abstract final class WidgetTypes {
   static const row = 'row';
   static const adaptiveRow = 'adaptiveRow';
   static const grid = 'grid';
+  static const freeCanvas = 'freeCanvas';
+  static const box = 'box';
   static const container = 'container';
   static const card = 'card';
   static const text = 'text';
@@ -67,6 +79,7 @@ abstract final class WidgetTypes {
   static const icon = 'icon';
   static const image = 'image';
   static const textField = 'textField';
+  static const customCode = 'customCode';
   static const divider = 'divider';
   static const spacer = 'spacer';
 }
@@ -88,6 +101,10 @@ abstract final class PropOptions {
   static const buttonVariant = ['filled', 'elevated', 'outlined', 'text'];
   static const imageFit = ['cover', 'contain', 'fill'];
 
+  /// How a box arranges its children: at exact positions, or in a line
+  /// like Figma's auto layout.
+  static const boxLayout = ['free', 'row', 'column'];
+
   /// Material icon names, matching `Icons.<name>` in Flutter.
   static const icons = [
     'star',
@@ -106,7 +123,30 @@ abstract final class PropOptions {
     'lock',
     'calendar_today',
     'camera_alt',
+    'storefront',
+    'shopping_bag',
+    'local_offer',
+    'arrow_back',
+    'close',
+    'add',
+    'remove',
+    'delete',
+    'share',
+    'more_vert',
+    'chevron_right',
+    'location_on',
+    'credit_card',
+    'tune',
+    'bookmark',
+    'grid_view',
+    'category',
   ];
+
+  /// Icons plus an empty choice for "no icon".
+  static const iconsOrNone = ['', ...icons];
+
+  /// Entrance animations any widget can play when its screen opens.
+  static const animations = ['none', 'fade', 'slideUp', 'slideLeft', 'scale'];
 }
 
 /// Registry of every widget type FlutterCanvas supports.
@@ -199,6 +239,68 @@ abstract final class WidgetCatalog {
       ],
     ),
     WidgetSpec(
+      type: WidgetTypes.freeCanvas,
+      label: 'Free canvas',
+      category: 'Layout',
+      description: 'Place widgets anywhere, like a Figma frame. '
+          'Shrinks to fit small screens.',
+      childMode: ChildMode.multiple,
+      defaults: {
+        'designWidth': 360,
+        'designHeight': 320,
+        'color': '#FFF8FAFC',
+        'borderRadius': 12,
+      },
+      props: [
+        PropSpec('designWidth', 'Frame width', PropKind.number,
+            min: 40, max: 4000),
+        PropSpec('designHeight', 'Frame height', PropKind.number,
+            min: 40, max: 4000),
+        PropSpec('color', 'Background', PropKind.color),
+        _radius,
+      ],
+    ),
+    WidgetSpec(
+      type: WidgetTypes.box,
+      label: 'Box',
+      category: 'Layout',
+      description: 'A shape you can draw. Holds text, images and other '
+          'boxes anywhere inside.',
+      childMode: ChildMode.multiple,
+      defaults: {
+        'width': 160,
+        'height': 120,
+        'layout': 'free',
+        'spacing': 8,
+        'mainAxisAlignment': 'start',
+        'crossAxisAlignment': 'center',
+        'color': '#FFE0E7FF',
+        'borderRadius': 16,
+        'padding': 0,
+        'borderColor': '',
+        'borderWidth': 0,
+        'shadow': 0,
+      },
+      props: [
+        PropSpec('layout', 'Layout', PropKind.choice,
+            options: PropOptions.boxLayout),
+        PropSpec('spacing', 'Gap between items', PropKind.number,
+            min: 0, max: 200),
+        PropSpec('mainAxisAlignment', 'Arrange', PropKind.choice,
+            options: PropOptions.mainAxis),
+        PropSpec('crossAxisAlignment', 'Align', PropKind.choice,
+            options: PropOptions.rowCross),
+        PropSpec('color', 'Fill', PropKind.color),
+        _radius,
+        PropSpec('padding', 'Inner spacing', PropKind.number,
+            min: 0, max: 200),
+        PropSpec('borderColor', 'Border color', PropKind.color),
+        PropSpec('borderWidth', 'Border width', PropKind.number,
+            min: 0, max: 40),
+        PropSpec('shadow', 'Shadow', PropKind.number, min: 0, max: 40),
+      ],
+    ),
+    WidgetSpec(
       type: WidgetTypes.container,
       label: 'Container',
       category: 'Layout',
@@ -215,10 +317,6 @@ abstract final class WidgetCatalog {
         _padding,
         PropSpec('color', 'Background', PropKind.color),
         _radius,
-        PropSpec('width', 'Width (0 = auto)', PropKind.number,
-            min: 0, max: 4000),
-        PropSpec('height', 'Height (0 = auto)', PropKind.number,
-            min: 0, max: 4000),
       ],
     ),
     WidgetSpec(
@@ -271,6 +369,7 @@ abstract final class WidgetCatalog {
       childMode: ChildMode.none,
       defaults: {
         'label': 'Button',
+        'navigateTo': '',
         'variant': 'filled',
         'color': '#FF4F46E5',
         'fullWidth': false,
@@ -282,7 +381,6 @@ abstract final class WidgetCatalog {
             options: PropOptions.buttonVariant),
         PropSpec('color', 'Color', PropKind.color),
         PropSpec('fullWidth', 'Full width', PropKind.toggle),
-        PropSpec('action', 'Action id (used by the renderer)', PropKind.text),
       ],
     ),
     WidgetSpec(
@@ -291,11 +389,12 @@ abstract final class WidgetCatalog {
       category: 'Content',
       description: 'A Material icon.',
       childMode: ChildMode.none,
-      defaults: {'icon': 'star', 'size': 32, 'color': '#FF4F46E5'},
+      defaults: {'icon': 'star', 'size': 32, 'color': '#FF4F46E5', 'badge': ''},
       props: [
         PropSpec('icon', 'Icon', PropKind.choice, options: PropOptions.icons),
         PropSpec('size', 'Size', PropKind.number, min: 8, max: 400),
         PropSpec('color', 'Color', PropKind.color),
+        PropSpec('badge', 'Badge (for example 3 or New)', PropKind.text),
       ],
     ),
     WidgetSpec(
@@ -353,7 +452,97 @@ abstract final class WidgetCatalog {
         PropSpec('size', 'Size', PropKind.number, min: 0, max: 400),
       ],
     ),
+    WidgetSpec(
+      type: WidgetTypes.customCode,
+      label: 'Custom code',
+      category: 'Advanced',
+      description: 'Any Flutter widget or pub.dev package, written in Dart.',
+      childMode: ChildMode.none,
+      defaults: {
+        'code': 'const FlutterLogo(size: 64)',
+        'imports': '',
+        'packages': '',
+      },
+      props: [
+        PropSpec('code', 'Widget code (one Dart expression)',
+            PropKind.multilineText),
+        PropSpec('imports', 'Imports, one per line', PropKind.multilineText),
+        PropSpec('packages', 'Packages for pubspec, one per line',
+            PropKind.multilineText),
+      ],
+    ),
   ];
+
+  /// Size and spacing every widget has, shown under "Size and position".
+  static const layoutProps = [
+    PropSpec('width', 'Width (0 = auto)', PropKind.number, min: 0, max: 4000),
+    PropSpec('height', 'Height (0 = auto)', PropKind.number,
+        min: 0, max: 4000),
+    PropSpec('margin', 'Outer spacing', PropKind.number, min: 0, max: 400),
+  ];
+
+  /// Position of a widget inside a free canvas.
+  static const positionProps = [
+    PropSpec('x', 'X', PropKind.number, min: 0, max: 4000),
+    PropSpec('y', 'Y', PropKind.number, min: 0, max: 4000),
+    PropSpec('fill', 'Fill the whole box', PropKind.toggle),
+  ];
+
+  /// What happens when any widget is tapped.
+  static const interactionProps = [
+    PropSpec('navigateTo', 'On tap, go to', PropKind.screenLink),
+    PropSpec('action', 'Action id (for your own code)', PropKind.text),
+  ];
+
+  /// The entrance animation any widget can play.
+  static const animationProps = [
+    PropSpec('animation', 'Entrance animation', PropKind.choice,
+        options: PropOptions.animations),
+    PropSpec('animationMs', 'Duration (ms)', PropKind.number,
+        min: 0, max: 5000),
+  ];
+
+  /// Whether the children of [node] sit at exact `x`/`y` positions: a free
+  /// canvas, or a box whose layout is `free`.
+  static bool isFreeLayout(WidgetNode? node) {
+    if (node == null) return false;
+    if (node.type == WidgetTypes.freeCanvas) return true;
+    return node.type == WidgetTypes.box &&
+        choiceOf(node, 'layout', PropOptions.boxLayout) == 'free';
+  }
+
+  /// Box properties that only matter when the box lays out in a row or
+  /// column.
+  static const autoLayoutKeys = {
+    'spacing',
+    'mainAxisAlignment',
+    'crossAxisAlignment',
+  };
+
+  /// Height a widget really gets. Boxes with a free layout need a height,
+  /// so they fall back to 120 when none is set.
+  static double? fixedHeight(WidgetNode node) {
+    final height = node.number('height');
+    if (height > 0) return height;
+    return isFreeLayout(node) ? 120 : null;
+  }
+
+  /// Width used for widgets inside a free canvas that have no width set.
+  static const double freeCanvasDefaultWidth = 200;
+
+  /// Width of [node] inside a free canvas, or null to let it size itself.
+  ///
+  /// Widgets that stretch to fill their parent (images, text fields,
+  /// layouts) need a width there, so they get [freeCanvasDefaultWidth].
+  static double? freeCanvasWidth(WidgetNode node) {
+    final width = node.number('width');
+    if (width > 0) return width;
+    final sizesItself = node.type == WidgetTypes.text ||
+        node.type == WidgetTypes.icon ||
+        node.type == WidgetTypes.spacer ||
+        (node.type == WidgetTypes.button && !node.boolean('fullWidth'));
+    return sizesItself ? null : freeCanvasDefaultWidth;
+  }
 
   static final Map<String, WidgetSpec> _byType = {
     for (final spec in all) spec.type: spec,

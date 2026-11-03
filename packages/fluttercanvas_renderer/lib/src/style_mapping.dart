@@ -58,6 +58,23 @@ const Map<String, IconData> _icons = {
   'lock': Icons.lock,
   'calendar_today': Icons.calendar_today,
   'camera_alt': Icons.camera_alt,
+  'storefront': Icons.storefront,
+  'shopping_bag': Icons.shopping_bag,
+  'local_offer': Icons.local_offer,
+  'arrow_back': Icons.arrow_back,
+  'close': Icons.close,
+  'add': Icons.add,
+  'remove': Icons.remove,
+  'delete': Icons.delete,
+  'share': Icons.share,
+  'more_vert': Icons.more_vert,
+  'chevron_right': Icons.chevron_right,
+  'location_on': Icons.location_on,
+  'credit_card': Icons.credit_card,
+  'tune': Icons.tune,
+  'bookmark': Icons.bookmark,
+  'grid_view': Icons.grid_view,
+  'category': Icons.category,
 };
 
 IconData iconOf(String name) => _icons[name] ?? Icons.help_outline;

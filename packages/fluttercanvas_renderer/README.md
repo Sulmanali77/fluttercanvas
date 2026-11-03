@@ -1,6 +1,6 @@
 # fluttercanvas_renderer
 
-Render [FlutterCanvas](https://github.com/sulmanali77/fluttercanvas) designs as
+Render [FlutterCanvas](https://github.com/Sulmanali77/fluttercanvas) designs as
 real Flutter widgets at runtime. Design a screen in the builder, save it as
 JSON, and show it in any app on Android, iOS, web, macOS, Windows or Linux.
 
@@ -27,9 +27,23 @@ the button is pressed.
 
 Set `includeScaffold: false` to embed a design inside one of your own screens.
 
+## Multiple screens
+
+`CanvasProjectView` runs a whole design. Buttons linked to a screen in the
+builder open that screen, and "go back" buttons return:
+
+```dart
+MaterialApp(
+  home: CanvasProjectView(
+    project: CanvasProject.fromJsonString(jsonFromServer),
+    onAction: (action, node) => handle(action),
+  ),
+);
+```
+
 ## Responsive widgets
 
-`AdaptiveRow` and `ResponsiveGrid` are exported too, so you can use them in
+`AdaptiveRow`, `ResponsiveGrid` and `FreeCanvas` are exported too, so you can use them in
 hand-written code:
 
 ```dart

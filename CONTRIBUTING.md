@@ -5,7 +5,7 @@ Thanks for helping! Bug reports, new widgets and templates are all welcome.
 ## Set up
 
 ```bash
-git clone https://github.com/sulmanali77/fluttercanvas.git
+git clone https://github.com/YOUR_USERNAME/fluttercanvas.git
 cd fluttercanvas
 flutter pub get
 ```

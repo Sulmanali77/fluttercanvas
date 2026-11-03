@@ -92,6 +92,7 @@ extension WidgetTree on WidgetNode {
   WidgetNode cloneWithNewIds() => WidgetNode(
         id: NodeIds.next(),
         type: type,
+        name: name,
         props: props,
         children: [for (final child in children) child.cloneWithNewIds()],
       );

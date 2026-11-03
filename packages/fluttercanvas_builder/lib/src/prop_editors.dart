@@ -8,11 +8,16 @@ class PropEditor extends StatelessWidget {
     required this.spec,
     required this.value,
     required this.onChanged,
+    this.screenOptions = const {'': 'Nothing'},
   });
 
   final PropSpec spec;
   final Object? value;
   final ValueChanged<Object?> onChanged;
+
+  /// Values and labels for [PropKind.screenLink], such as
+  /// `{'': 'Nothing', 'back': 'Go back', screenId: 'Profile'}`.
+  final Map<String, String> screenOptions;
 
   static const _decoration = InputDecoration(
     border: OutlineInputBorder(),
@@ -38,6 +43,12 @@ class PropEditor extends StatelessWidget {
           onChanged: (checked) => onChanged(checked),
         ),
       PropKind.choice => _choiceField(),
+      PropKind.screenLink => _dropdown(
+          screenOptions,
+          value is String && screenOptions.containsKey(value)
+              ? value as String
+              : screenOptions.keys.first,
+        ),
     };
   }
 
@@ -51,29 +62,19 @@ class PropEditor extends StatelessWidget {
     );
   }
 
-  Widget _numberField() {
-    final current = value is num ? _formatNumber((value as num).toDouble()) : '';
-    return TextFormField(
-      initialValue: current,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      decoration: _decoration.copyWith(labelText: spec.label),
-      onChanged: (text) {
-        var number = double.tryParse(text.trim());
-        if (number == null) return;
-        final min = spec.min;
-        final max = spec.max;
-        if (min != null && number < min) number = min;
-        if (max != null && number > max) number = max;
-        onChanged(number);
-      },
-    );
-  }
+  Widget _numberField() =>
+      _NumberField(spec: spec, value: value, onChanged: onChanged);
 
   Widget _choiceField() {
     final options = spec.options;
     final current = value is String && options.contains(value)
         ? value as String
         : options.first;
+    return _dropdown({for (final option in options) option: humanize(option)},
+        current);
+  }
+
+  Widget _dropdown(Map<String, String> options, String current) {
     return InputDecorator(
       decoration: _decoration.copyWith(
         labelText: spec.label,
@@ -85,8 +86,8 @@ class PropEditor extends StatelessWidget {
           isExpanded: true,
           isDense: true,
           items: [
-            for (final option in options)
-              DropdownMenuItem(value: option, child: Text(humanize(option))),
+            for (final entry in options.entries)
+              DropdownMenuItem(value: entry.key, child: Text(entry.value)),
           ],
           onChanged: (selected) {
             if (selected != null) onChanged(selected);
@@ -97,9 +98,72 @@ class PropEditor extends StatelessWidget {
   }
 }
 
+/// A number input that also updates when the value changes elsewhere, for
+/// example while dragging or resizing on the canvas.
+class _NumberField extends StatefulWidget {
+  const _NumberField({
+    required this.spec,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final PropSpec spec;
+  final Object? value;
+  final ValueChanged<Object?> onChanged;
+
+  @override
+  State<_NumberField> createState() => _NumberFieldState();
+}
+
+class _NumberFieldState extends State<_NumberField> {
+  late final _text = TextEditingController(text: _format(widget.value));
+  final _focus = FocusNode();
+
+  static String _format(Object? value) =>
+      value is num ? _formatNumber(value.toDouble()) : '';
+
+  @override
+  void didUpdateWidget(_NumberField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Don't overwrite what the user is typing.
+    if (_focus.hasFocus) return;
+    final formatted = _format(widget.value);
+    if (_text.text != formatted) _text.text = formatted;
+  }
+
+  @override
+  void dispose() {
+    _text.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  void _changed(String text) {
+    final number = double.tryParse(text.trim());
+    if (number == null) return;
+    final min = widget.spec.min;
+    final max = widget.spec.max;
+    if (min != null && number < min) return;
+    if (max != null && number > max) return;
+    widget.onChanged(number);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _text,
+      focusNode: _focus,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      decoration: PropEditor._decoration.copyWith(labelText: widget.spec.label),
+      onChanged: _changed,
+    );
+  }
+}
+
 /// Turns `spaceBetween` or `shopping_cart` into `Space between` or
 /// `Shopping cart`.
 String humanize(String value) {
+  if (value.isEmpty) return 'None';
   final spaced = value
       .replaceAll('_', ' ')
       .replaceAllMapped(

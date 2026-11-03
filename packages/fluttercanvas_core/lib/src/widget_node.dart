@@ -24,6 +24,7 @@ class WidgetNode {
   WidgetNode({
     required this.id,
     required this.type,
+    this.name = '',
     Map<String, Object?> props = const {},
     List<WidgetNode> children = const [],
   })  : props = Map.unmodifiable(props),
@@ -38,11 +39,13 @@ class WidgetNode {
       throw const FormatException('Every widget needs a "type".');
     }
     final id = json['id'];
+    final name = json['name'];
     final rawProps = json['props'];
     final rawChildren = json['children'];
     return WidgetNode(
       id: id is String && id.isNotEmpty ? id : NodeIds.next(),
       type: type,
+      name: name is String ? name : '',
       props: {
         ...WidgetCatalog.defaultsFor(type),
         if (rawProps is Map) ..._stringKeyed(rawProps),
@@ -61,6 +64,10 @@ class WidgetNode {
   /// Widget type, one of [WidgetTypes].
   final String type;
 
+  /// Optional layer name. Named layers become their own widget class in the
+  /// exported code, for example `ProductCard`.
+  final String name;
+
   /// Property values. Only JSON-friendly values: strings, numbers and bools.
   final Map<String, Object?> props;
 
@@ -69,12 +76,14 @@ class WidgetNode {
 
   /// Returns a copy with new [props] and/or [children].
   WidgetNode copyWith({
+    String? name,
     Map<String, Object?>? props,
     List<WidgetNode>? children,
   }) {
     return WidgetNode(
       id: id,
       type: type,
+      name: name ?? this.name,
       props: props ?? this.props,
       children: children ?? this.children,
     );
@@ -106,6 +115,7 @@ class WidgetNode {
   Map<String, Object?> toJson() => {
         'id': id,
         'type': type,
+        if (name.isNotEmpty) 'name': name,
         'props': Map<String, Object?>.of(props),
         if (children.isNotEmpty)
           'children': [for (final child in children) child.toJson()],

@@ -1,17 +1,13 @@
 // ignore_for_file: avoid_print
 import 'package:fluttercanvas_core/fluttercanvas_core.dart';
 
-/// Builds a design in code, saves it as JSON and prints the generated
-/// Flutter screen.
+/// Builds a two-screen project and prints every generated file.
 void main() {
-  final document = CanvasDocument.blank().copyWith(name: 'Profile page');
-  final title = WidgetCatalog.create(WidgetTypes.text)
-      .withProp('text', 'Hello from FlutterCanvas')
-      .withProp('fontSize', 24);
-  final design = document.copyWith(
-    root: document.root.insert(document.root.id, 0, title),
-  );
+  final project = CanvasProject.starter();
+  print(project.toJsonString(pretty: true));
 
-  print(design.toJsonString(pretty: true));
-  print(const FlutterCodeGenerator().generate(design));
+  for (final file in const FlutterCodeGenerator().generateProject(project)) {
+    print('// ===== ${file.path} =====');
+    print(file.content);
+  }
 }
