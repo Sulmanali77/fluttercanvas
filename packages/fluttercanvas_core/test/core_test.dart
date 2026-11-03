@@ -218,7 +218,7 @@ void main() {
         ]),
       );
       final code = const FlutterCodeGenerator().generate(document);
-      expect('Align('.allMatches(code).length, 2);
+      expect('Alignment.centerLeft'.allMatches(code).length, 2);
       expect(code, contains('widthFactor: 1'));
       expect(code, contains('height: 40'));
       _expectBalanced(code, 'sizes');
