@@ -1,6 +1,6 @@
 ---
 name: flutter-canvas
-description: Design Flutter app screens as FlutterCanvas design JSON, and turn them into clean Flutter code. Use this skill whenever the user mentions FlutterCanvas, fluttercanvas_core, fluttercanvas_builder or fluttercanvas_renderer, asks for a design JSON to import into the builder, wants screens, navbars, bottom navigation, animations or an e-commerce/login/profile layout generated for FlutterCanvas, or wants to export, explain or fix FlutterCanvas output, even if they only say "make me a screen for my canvas app".
+description: Design Flutter app screens as FlutterCanvas design JSON, and turn them into clean Flutter code. Use this skill whenever the user mentions FlutterCanvas, fluttercanvas_core, fluttercanvas or fluttercanvas_renderer, asks for a design JSON to import into the builder, wants screens, navbars, bottom navigation, animations or an e-commerce/login/profile layout generated for FlutterCanvas, or wants to export, explain or fix FlutterCanvas output, even if they only say "make me a screen for my canvas app".
 ---
 
 # FlutterCanvas

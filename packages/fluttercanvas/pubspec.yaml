@@ -1,8 +1,8 @@
-name: fluttercanvas_builder
+name: fluttercanvas
 description: Open-source drag-and-drop UI builder for Flutter. Design screens visually, preview them on phone, tablet, Mac and web, then export responsive code.
 version: 0.3.0
 homepage: https://github.com/Sulmanali77/fluttercanvas
-repository: https://github.com/Sulmanali77/fluttercanvas/tree/main/packages/fluttercanvas_builder
+repository: https://github.com/Sulmanali77/fluttercanvas/tree/main/packages/fluttercanvas
 issue_tracker: https://github.com/Sulmanali77/fluttercanvas/issues
 topics:
   - ui

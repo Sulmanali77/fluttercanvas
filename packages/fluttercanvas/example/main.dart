@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttercanvas_builder/fluttercanvas_builder.dart';
+import 'package:fluttercanvas/fluttercanvas.dart';
 
 /// Opens the builder in debug builds only, so it never ships to users.
 ///

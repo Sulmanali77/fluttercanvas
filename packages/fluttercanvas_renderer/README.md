@@ -1,50 +1,66 @@
 # fluttercanvas_renderer
 
-Render [FlutterCanvas](https://github.com/Sulmanali77/fluttercanvas) designs as
-real Flutter widgets at runtime. Design a screen in the builder, save it as
-JSON, and show it in any app on Android, iOS, web, macOS, Windows or Linux.
+[![pub package](https://img.shields.io/pub/v/fluttercanvas_renderer.svg)](https://pub.dev/packages/fluttercanvas_renderer)
+[![CI](https://github.com/Sulmanali77/fluttercanvas/actions/workflows/ci.yml/badge.svg)](https://github.com/Sulmanali77/fluttercanvas/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Sulmanali77/fluttercanvas/blob/main/LICENSE)
 
-Because designs are plain JSON, you can serve them from your backend and
-update screens without an app store release (server-driven UI).
+Render [FlutterCanvas](https://pub.dev/packages/fluttercanvas) designs as
+real, responsive Flutter widgets at runtime, on Android, iOS, web, macOS,
+Windows and Linux.
 
-## Usage
+Because designs are JSON, you can serve them from your backend and change
+screens **without an app store release** (server-driven UI).
+
+![A rendered e-commerce design](https://raw.githubusercontent.com/Sulmanali77/fluttercanvas/main/docs/screenshots/renderer.png)
+
+## Features
+
+- `CanvasProjectView` runs a whole multi-screen design with real navigation,
+  app bars and a bottom navigation bar.
+- `CanvasView` renders one screen, with or without a `Scaffold`.
+- Button and tap **actions** come back to your code by id.
+- **Entrance animations**, icon **badges**, boxes with **auto layout**,
+  free-form layouts and responsive grids.
+- Reusable widgets: `AdaptiveRow`, `ResponsiveGrid`, `FreeCanvas` and
+  `EntranceAnimation`.
+
+## Install
+
+```yaml
+dependencies:
+  fluttercanvas_renderer: ^0.3.0
+```
+
+## Run a whole app design
 
 ```dart
 import 'package:fluttercanvas_renderer/fluttercanvas_renderer.dart';
 
-CanvasView.fromJson(
-  jsonFromServer,
-  delegate: CanvasRenderDelegate(
+MaterialApp(
+  home: CanvasProjectView(
+    project: CanvasProject.fromJsonString(jsonFromServer),
     onAction: (action, node) {
-      if (action == 'checkout') Navigator.pushNamed(context, '/checkout');
+      if (action == 'checkout') startCheckout();
     },
   ),
 );
 ```
 
-Give a button an **Action id** in the builder, and `onAction` receives it when
-the button is pressed.
-
-Set `includeScaffold: false` to embed a design inside one of your own screens.
-
-## Multiple screens
-
-`CanvasProjectView` runs a whole design. Buttons linked to a screen in the
-builder open that screen, and "go back" buttons return:
+## Render one screen
 
 ```dart
-MaterialApp(
-  home: CanvasProjectView(
-    project: CanvasProject.fromJsonString(jsonFromServer),
+CanvasView.fromJson(
+  screenJson,
+  delegate: CanvasRenderDelegate(
     onAction: (action, node) => handle(action),
   ),
 );
 ```
 
-## Responsive widgets
+Set `includeScaffold: false` to place a design inside one of your own
+screens.
 
-`AdaptiveRow`, `ResponsiveGrid` and `FreeCanvas` are exported too, so you can use them in
-hand-written code:
+## Responsive widgets for your own code
 
 ```dart
 ResponsiveGrid(
@@ -54,3 +70,12 @@ ResponsiveGrid(
   children: products.map(ProductCard.new).toList(),
 );
 ```
+
+## Related packages
+
+- [`fluttercanvas`](https://pub.dev/packages/fluttercanvas): design visually and export code
+- [`fluttercanvas_core`](https://pub.dev/packages/fluttercanvas_core): the design model and code generator
+
+## License
+
+MIT

@@ -9,5 +9,5 @@ environment:
 workspace:
   - packages/fluttercanvas_core
   - packages/fluttercanvas_renderer
-  - packages/fluttercanvas_builder
+  - packages/fluttercanvas
   - apps/playground

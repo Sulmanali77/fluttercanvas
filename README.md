@@ -42,7 +42,7 @@ runtime dependency in the exported code.
 | --- | --- |
 | [`fluttercanvas_core`](packages/fluttercanvas_core) | Pure Dart design model, JSON format and code generator. |
 | [`fluttercanvas_renderer`](packages/fluttercanvas_renderer) | Renders JSON designs as live widgets (server-driven UI). |
-| [`fluttercanvas_builder`](packages/fluttercanvas_builder) | The drag-and-drop editor. |
+| [`fluttercanvas`](packages/fluttercanvas) | The drag-and-drop editor. |
 
 ## Quick start
 
@@ -50,12 +50,12 @@ runtime dependency in the exported code.
 
 ```yaml
 dev_dependencies:
-  fluttercanvas_builder: ^0.3.0
+  fluttercanvas: ^0.3.0
 ```
 
 ```dart
 import 'package:flutter/foundation.dart';
-import 'package:fluttercanvas_builder/fluttercanvas_builder.dart';
+import 'package:fluttercanvas/fluttercanvas.dart';
 
 MaterialApp(
   home: kDebugMode ? const FlutterCanvasBuilder() : const MyHomePage(),
@@ -148,7 +148,7 @@ fluttercanvas/
 ├── packages/
 │   ├── fluttercanvas_core/      # Model, JSON and code generator (pure Dart)
 │   ├── fluttercanvas_renderer/  # Renders designs at runtime
-│   └── fluttercanvas_builder/   # Drag-and-drop editor
+│   └── fluttercanvas/   # Drag-and-drop editor
 ├── apps/playground/             # Demo app, deployed to GitHub Pages
 ├── .github/workflows/           # CI and demo deployment
 └── pubspec.yaml                 # Dart pub workspace
@@ -171,13 +171,13 @@ Run tests from each package folder with `flutter test`.
 
 1. Replace `Sulmanali77` in every `pubspec.yaml` and `README.md`.
 2. Check the names are free: search pub.dev for `fluttercanvas_core`,
-   `fluttercanvas_renderer` and `fluttercanvas_builder`.
+   `fluttercanvas_renderer` and `fluttercanvas`.
 3. Publish in dependency order:
 
 ```bash
 cd packages/fluttercanvas_core     && flutter pub publish --dry-run && flutter pub publish
 cd ../fluttercanvas_renderer       && flutter pub publish --dry-run && flutter pub publish
-cd ../fluttercanvas_builder        && flutter pub publish --dry-run && flutter pub publish
+cd ../fluttercanvas        && flutter pub publish --dry-run && flutter pub publish
 ```
 
 ## Roadmap

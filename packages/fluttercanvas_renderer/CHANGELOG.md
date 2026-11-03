@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Complete README with features and examples.
+
 ## 0.3.0
 
 - Renders tap actions, entrance animations (`EntranceAnimation`), icon badges, editable app bars and bottom navigation (`CanvasBottomNav`).

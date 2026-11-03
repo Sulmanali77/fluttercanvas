@@ -25,7 +25,7 @@ jobs:
         working-directory: packages/fluttercanvas_renderer
         run: flutter test
       - name: Test builder
-        working-directory: packages/fluttercanvas_builder
+        working-directory: packages/fluttercanvas
         run: flutter test
       - name: Check packages are publishable
         run: |

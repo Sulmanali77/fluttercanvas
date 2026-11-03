@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttercanvas_builder/fluttercanvas_builder.dart';
+import 'package:fluttercanvas/fluttercanvas.dart';
 
 void main() => runApp(const PlaygroundApp());
 

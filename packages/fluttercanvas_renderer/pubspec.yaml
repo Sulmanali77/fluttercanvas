@@ -1,6 +1,6 @@
 name: fluttercanvas_renderer
 description: Render FlutterCanvas JSON designs as real, responsive Flutter widgets at runtime. Server-driven UI for Android, iOS, web and desktop.
-version: 0.3.0
+version: 0.3.1
 homepage: https://github.com/Sulmanali77/fluttercanvas
 repository: https://github.com/Sulmanali77/fluttercanvas/tree/main/packages/fluttercanvas_renderer
 issue_tracker: https://github.com/Sulmanali77/fluttercanvas/issues
