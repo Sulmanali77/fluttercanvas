@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Complete README with features, examples and the CLI.
+
 ## 0.3.0
 
 - Any widget can open a screen or run an action when tapped (`navigateTo`, `action`), and play an entrance animation (`animation`, `animationMs`).
