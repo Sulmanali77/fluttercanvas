@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fluttercanvas_core/fluttercanvas_core.dart';
 import 'package:fluttercanvas_renderer/fluttercanvas_renderer.dart';
 
 import 'builder_controller.dart';

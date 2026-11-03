@@ -254,8 +254,8 @@ void main() {
       MaterialApp(home: FlutterCanvasBuilder(controller: controller)),
     );
 
-    await tester.tap(find.text('Button').first);
+    await tester.tap(find.text('Column').first);
     await tester.pump();
-    expect(controller.document.root.children.single.type, WidgetTypes.button);
+    expect(controller.document.root.children.single.type, WidgetTypes.column);
   });
 }
